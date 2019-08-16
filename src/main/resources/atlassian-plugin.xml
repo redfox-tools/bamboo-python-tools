@@ -1,0 +1,44 @@
+<atlassian-plugin key="${atlassian.plugin.key}" name="${project.name}" plugins-version="2">
+    <plugin-info>
+        <description>${project.description}</description>
+        <version>${project.version}</version>
+        <vendor name="${project.organization.name}" url="${project.organization.url}" />
+        <param name="plugin-icon">images/python.png</param>
+        <param name="plugin-logo">images/python.png</param>
+    </plugin-info>
+
+    <!-- add our i18n resource -->
+    <resource type="i18n" name="i18n" location="bamboo-python-tools"/>
+
+    <!--  black  -->
+    <taskType key="tools.redfox.python.tools.black.task" name="black" class="tools.redfox.bamboo.python.tools.type.BlackTaskType">
+        <description>Run black (https://github.com/psf/black) against your code.</description>
+        <category name="builder" />
+        <resource type="freemarker" name="edit" location="templates/tools/redfox/black/task.ftl"/>
+        <resource type="freemarker" name="view" location="templates/tools/redfox/black/task.ftl"/>
+        <resource type="download" name="icon" location="images/black/logo.png"/>
+        <configuration class="tools.redfox.bamboo.python.tools.configuration.BlackTaskConfiguration" />
+        <exporter class="tools.redfox.bamboo.python.tools.exporter.BlackExporter" />
+    </taskType>
+
+    <capabilityType class="tools.redfox.bamboo.python.tools.capability.BlackCapabilityType" key="tools.redfox.python.tools.black.executable" name="black" sortOrder="2000">
+        <description>black agent capability</description>
+        <resource location="templates/tools/redfox/black/editCapability.ftl" name="edit" type="freemarker"/>
+    </capabilityType>
+
+    <!-- pytest -->
+    <taskType key="tools.redfox.python.tools.pytest.task" name="pytest" class="tools.redfox.bamboo.python.tools.type.PyTestTaskType">
+        <description>Run pytest (https://pytest.org/en/latest/) against your code.</description>
+        <category name="builder" />
+        <resource type="freemarker" name="edit" location="templates/tools/redfox/pytest/task.ftl"/>
+        <resource type="freemarker" name="view" location="templates/tools/redfox/pytest/task.ftl"/>
+        <resource type="download" name="icon" location="images/pytest/logo.png"/>
+        <configuration class="tools.redfox.bamboo.python.tools.configuration.PyTestTaskConfiguration" />
+        <exporter class="tools.redfox.bamboo.python.tools.exporter.PyTestExporter" />
+    </taskType>
+
+    <capabilityType class="tools.redfox.bamboo.python.tools.capability.PyTestCapabilityType" key="tools.redfox.python.tools.pytest.executable" name="pytest" sortOrder="2000">
+        <description>pytest agent capability</description>
+        <resource location="templates/tools/redfox/pytest/editCapability.ftl" name="edit" type="freemarker"/>
+    </capabilityType>
+</atlassian-plugin>
