@@ -31,4 +31,12 @@ public class PyTestTaskConfiguration extends AbstractTaskConfigurator implements
 
         return config;
     }
+
+    @Override
+    public void populateContextForCreate(@NotNull final Map<String, Object> context)
+    {
+        super.populateContextForCreate(context);
+
+        context.put("tools.redfox.python.tools.pytest.options", "--junit-xml=./test-reports/pytest.xml");
+    }
 }
