@@ -12,29 +12,20 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.Map;
 
-public class BlackCapabilityType extends AbstractCapabilityTypeModule {
+public class BlackCapabilityType extends BaseCapabilityType {
     public BlackCapabilityType(@ComponentImport TemplateRenderer templateRenderer, @ComponentImport TextProvider textProvider) {
         setTemplateRenderer(templateRenderer);
     }
 
     @Override
     @NotNull
-    public Map<String, String> validate(@NotNull Map<String, String[]> map) {
-        return Collections.emptyMap();
-    }
-
-    @Override
-    @NotNull
-    public Capability getCapability(Map<String, String[]> map) {
-        return new CapabilityImpl(
-                "tools.redfox.python.tools.black.executable",
-                Arrays.stream(map.get("tools.redfox.python.tools.black.executable")).filter(c-> !c.isEmpty()).findFirst().orElse("")
-        );
-    }
-
-    @Override
-    @NotNull
     public String getLabel(@NotNull String s) {
+        return this.getLabel();
+    }
+
+    @Override
+    @NotNull
+    public String getLabel() {
         return "black";
     }
 }

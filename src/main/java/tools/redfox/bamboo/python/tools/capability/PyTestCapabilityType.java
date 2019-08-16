@@ -12,29 +12,20 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.Map;
 
-public class PyTestCapabilityType extends AbstractCapabilityTypeModule {
+public class PyTestCapabilityType extends BaseCapabilityType {
     public PyTestCapabilityType(@ComponentImport TemplateRenderer templateRenderer, @ComponentImport TextProvider textProvider) {
         setTemplateRenderer(templateRenderer);
     }
 
     @Override
     @NotNull
-    public Map<String, String> validate(@NotNull Map<String, String[]> map) {
-        return Collections.emptyMap();
-    }
-
-    @Override
-    @NotNull
-    public Capability getCapability(Map<String, String[]> map) {
-        return new CapabilityImpl(
-                "tools.redfox.python.tools.pytest.executable",
-                Arrays.stream(map.get("tools.redfox.python.tools.pytest.executable")).filter(c-> !c.isEmpty()).findFirst().orElse("")
-        );
-    }
-
-    @Override
-    @NotNull
     public String getLabel(@NotNull String s) {
+        return this.getLabel();
+    }
+
+    @Override
+    @NotNull
+    public String getLabel() {
         return "pytest";
     }
 }
