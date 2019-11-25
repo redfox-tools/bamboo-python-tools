@@ -39,4 +39,12 @@ public class PyTestTaskConfiguration extends AbstractTaskConfigurator implements
 
         context.put("tools.redfox.python.tools.pytest.options", "--junit-xml=./test-reports/pytest.xml");
     }
+
+    @Override
+    public void populateContextForEdit(@NotNull final Map<String, Object> context, @NotNull final TaskDefinition taskDefinition)
+    {
+        super.populateContextForEdit(context, taskDefinition);
+
+        context.put("tools.redfox.python.tools.pytest.options", taskDefinition.getConfiguration().get("tools.redfox.python.tools.pytest.options"));
+    }
 }
