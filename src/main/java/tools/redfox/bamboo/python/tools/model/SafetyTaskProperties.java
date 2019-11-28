@@ -5,33 +5,47 @@ import com.atlassian.bamboo.specs.api.exceptions.PropertiesValidationException;
 import com.atlassian.bamboo.specs.api.model.AtlassianModuleProperties;
 import com.atlassian.bamboo.specs.api.model.plan.condition.ConditionProperties;
 import com.atlassian.bamboo.specs.api.model.plan.requirement.RequirementProperties;
-import com.atlassian.bamboo.specs.api.model.task.TaskProperties;
+import com.atlassian.bamboo.specs.api.validators.common.ValidationContext;
 import org.jetbrains.annotations.NotNull;
 import tools.redfox.bamboo.python.tools.builders.PyTestTask;
+import tools.redfox.bamboo.python.tools.type.PyTestTaskType;
+import tools.redfox.bamboo.python.tools.type.SafetyTaskType;
 
 import java.util.List;
 
 @Builder(PyTestTask.class)
-public class SafetyTaskProperties extends TaskProperties {
+public class SafetyTaskProperties extends BaseTaskProperties {
+    public static final ValidationContext VALIDATION_CONTEXT = ValidationContext.of(SafetyTaskType.NAME);
     private static final AtlassianModuleProperties ATLASSIAN_PLUGIN =
-            new AtlassianModuleProperties("tools.redfox.bamboo.python.tools.pytest:pytest");
-    private String options;
+            new AtlassianModuleProperties(SafetyTaskType.TASK_ID);
+
+    private String input;
 
     public SafetyTaskProperties() {
+        super();
     }
 
-    public SafetyTaskProperties(String description, boolean enabled, String options, @NotNull List<RequirementProperties> requirements, @NotNull List<? extends ConditionProperties> conditions) throws PropertiesValidationException {
-        super(description, enabled, requirements, conditions);
-        this.options = options;
+    public SafetyTaskProperties(
+            String description,
+            boolean enabled,
+            String runtime,
+            String options,
+            String input,
+            String output,
+            String workingSubDirectory,
+            String environmentVariables,
+            @NotNull List<RequirementProperties> requirements,
+            @NotNull List<? extends ConditionProperties> conditions) throws PropertiesValidationException {
+        super(description, enabled, runtime, options, output, workingSubDirectory, environmentVariables, requirements, conditions);
+        this.input = input;
     }
 
-    public String getOptions() {
-        return options;
-    }
-
-    @NotNull
     @Override
-    public AtlassianModuleProperties getAtlassianPlugin() {
-        return ATLASSIAN_PLUGIN;
+    protected String getModulePropertiesName() {
+        return SafetyTaskType.TASK_ID;
+    }
+
+    public String getInput() {
+        return input;
     }
 }

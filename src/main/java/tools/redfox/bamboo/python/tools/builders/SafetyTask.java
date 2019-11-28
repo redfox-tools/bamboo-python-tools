@@ -1,26 +1,31 @@
 package tools.redfox.bamboo.python.tools.builders;
 
-import com.atlassian.bamboo.specs.api.builders.task.Task;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import tools.redfox.bamboo.python.tools.model.PyTestTaskProperties;
+import tools.redfox.bamboo.python.tools.model.SafetyTaskProperties;
 
-public class SafetyTask extends Task<SafetyTask, PyTestTaskProperties> {
+public class SafetyTask extends BaseTask<SafetyTask, SafetyTaskProperties> {
     @Nullable
-    private String options;
+    protected String input;
 
-    public SafetyTask options(@Nullable String options) {
-        this.options = options;
+    public SafetyTask input(@Nullable String input) {
+        this.input = input;
+        configuration.put("input", input);
         return this;
     }
 
     @NotNull
     @Override
-    protected PyTestTaskProperties build() {
-        return new PyTestTaskProperties(
+    protected SafetyTaskProperties build() {
+        return new SafetyTaskProperties(
                 description,
                 taskEnabled,
+                runtime,
                 options,
+                input,
+                output,
+                workingSubDirectory,
+                environmentVariables,
                 requirements,
                 conditions
         );

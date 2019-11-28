@@ -13,32 +13,36 @@
     <!--  black  -->
     <taskType key="tools.redfox.python.tools.black.task" name="black" class="tools.redfox.bamboo.python.tools.type.BlackTaskType">
         <description>Run black (https://github.com/psf/black) against your code.</description>
+        <executable key="black" nameKey="agent.capability.type.tools.redfox.python.tools.black.executableName" pathHelpKey="agent.capability.type.tools.redfox.python.tools.black.executable.value.description" />
         <category name="builder" />
-        <resource type="freemarker" name="edit" location="templates/tools/redfox/black/task.ftl"/>
-        <resource type="freemarker" name="view" location="templates/tools/redfox/black/task.ftl"/>
+        <resource type="freemarker" name="edit" location="templates/tools/redfox/black/edit.ftl"/>
+        <resource type="freemarker" name="view" location="templates/tools/redfox/black/edit.ftl"/>
         <resource type="download" name="icon" location="images/black/logo.png"/>
         <configuration class="tools.redfox.bamboo.python.tools.configuration.BlackTaskConfiguration" />
         <exporter class="tools.redfox.bamboo.python.tools.exporter.BlackExporter" />
     </taskType>
 
-    <capabilityType class="tools.redfox.bamboo.python.tools.capability.BlackCapabilityType" key="tools.redfox.python.tools.black.executable" name="black" sortOrder="2000">
-        <description>black agent capability</description>
-        <resource location="templates/tools/redfox/black/editCapability.ftl" name="edit" type="freemarker"/>
-    </capabilityType>
-
     <!-- pytest -->
     <taskType key="tools.redfox.python.tools.pytest.task" name="pytest" class="tools.redfox.bamboo.python.tools.type.PyTestTaskType">
         <description>Run pytest (https://pytest.org/en/latest/) against your code.</description>
+        <executable key="pytest" nameKey="agent.capability.type.tools.redfox.python.tools.pytest.executableName" pathHelpKey="agent.capability.type.tools.redfox.python.tools.pytest.executable.value.description" />
         <category name="builder" />
-        <resource type="freemarker" name="edit" location="templates/tools/redfox/pytest/task.ftl"/>
-        <resource type="freemarker" name="view" location="templates/tools/redfox/pytest/task.ftl"/>
+        <resource type="freemarker" name="edit" location="templates/tools/redfox/task/edit.ftl"/>
+        <resource type="freemarker" name="view" location="templates/tools/redfox/task/edit.ftl"/>
         <resource type="download" name="icon" location="images/pytest/logo.png"/>
         <configuration class="tools.redfox.bamboo.python.tools.configuration.PyTestTaskConfiguration" />
         <exporter class="tools.redfox.bamboo.python.tools.exporter.PyTestExporter" />
     </taskType>
 
-    <capabilityType class="tools.redfox.bamboo.python.tools.capability.PyTestCapabilityType" key="tools.redfox.python.tools.pytest.executable" name="pytest" sortOrder="2000">
-        <description>pytest agent capability</description>
-        <resource location="templates/tools/redfox/pytest/editCapability.ftl" name="edit" type="freemarker"/>
-    </capabilityType>
+    <taskType key="tools.redfox.python.tools.safety.task" name="safety" class="tools.redfox.bamboo.python.tools.type.SafetyTaskType">
+        <description>Run safety (https://pytest.org/en/latest/) against your code.</description>
+        <executable key="safety" nameKey="agent.capability.type.tools.redfox.python.tools.safety.executableName" pathHelpKey="agent.capability.type.tools.redfox.python.tools.safety.executable.value.description" />
+        <category name="builder" />
+        <resource type="freemarker" name="edit" location="templates/tools/redfox/safety/edit.ftl"/>
+        <resource type="freemarker" name="view" location="templates/tools/redfox/safety/edit.ftl"/>
+        <resource type="download" name="icon" location="images/pytest/logo.png"/>
+        <configuration class="tools.redfox.bamboo.python.tools.configuration.SafetyTaskConfiguration" />
+        <exporter class="tools.redfox.bamboo.python.tools.exporter.SafetyExporter" />
+    </taskType>
 </atlassian-plugin>
+

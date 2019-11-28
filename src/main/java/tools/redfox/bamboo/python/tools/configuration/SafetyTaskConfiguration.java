@@ -1,34 +1,30 @@
 package tools.redfox.bamboo.python.tools.configuration;
 
-import com.atlassian.bamboo.collections.ActionParametersMap;
-import com.atlassian.bamboo.task.AbstractTaskConfigurator;
-import com.atlassian.bamboo.task.TaskDefinition;
+import com.atlassian.bamboo.task.TaskConfiguratorHelper;
 import com.atlassian.bamboo.task.TaskRequirementSupport;
-import com.atlassian.bamboo.v2.build.agent.capability.Requirement;
-import com.atlassian.bamboo.v2.build.agent.capability.RequirementImpl;
+import com.atlassian.bamboo.ww2.actions.build.admin.create.UIConfigSupport;
+import com.atlassian.plugin.spring.scanner.annotation.imports.ComponentImport;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import tools.redfox.bamboo.python.tools.type.SafetyTaskType;
 
-import java.util.LinkedHashSet;
-import java.util.Map;
 import java.util.Set;
 
-public class SafetyTaskConfiguration extends AbstractTaskConfigurator implements TaskRequirementSupport {
-    @Override
-    @NotNull
-    public Set<Requirement> calculateRequirements(@NotNull TaskDefinition taskDefinition) {
-        return new LinkedHashSet<Requirement>() {{
-            add(new RequirementImpl("tools.redfox.python.tools.pytest.executable", true, ".*"));
-        }};
+public class SafetyTaskConfiguration extends BaseTaskConfiguration implements TaskRequirementSupport {
+    public SafetyTaskConfiguration(@ComponentImport UIConfigSupport uiConfigSupport, @ComponentImport TaskConfiguratorHelper taskConfiguratorHelper) {
+        super(uiConfigSupport, taskConfiguratorHelper);
     }
 
-    @Override
     @NotNull
-    public Map<String, String> generateTaskConfigMap(@NotNull final ActionParametersMap params, @Nullable final TaskDefinition previousTaskDefinition) {
-        final Map<String, String> config = super.generateTaskConfigMap(params, previousTaskDefinition);
+    @Override
+    protected Set<String> getFieldsToCopy() {
+        Set<String> fields = super.getFieldsToCopy();
+        fields.add("input");
+        return fields;
+    }
 
-        config.put("tools.redfox.python.tools.pytest.options", params.getString("tools.redfox.python.tools.pytest.options"));
-
-        return config;
+    @NotNull
+    @Override
+    protected String getExecutableName() {
+        return SafetyTaskType.NAME;
     }
 }

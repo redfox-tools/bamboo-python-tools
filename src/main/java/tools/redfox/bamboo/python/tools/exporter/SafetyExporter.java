@@ -1,44 +1,27 @@
 package tools.redfox.bamboo.python.tools.exporter;
 
-import com.atlassian.bamboo.specs.api.builders.task.Task;
-import com.atlassian.bamboo.specs.api.model.task.TaskProperties;
-import com.atlassian.bamboo.specs.api.validators.common.ValidationProblem;
-import com.atlassian.bamboo.task.TaskContainer;
-import com.atlassian.bamboo.task.TaskDefinition;
-import com.atlassian.bamboo.task.export.TaskDefinitionExporter;
-import com.atlassian.bamboo.task.export.TaskValidationContext;
-import com.google.common.base.Preconditions;
+import com.atlassian.bamboo.specs.api.validators.common.ValidationContext;
+import com.atlassian.bamboo.ww2.actions.build.admin.create.UIConfigSupport;
 import org.jetbrains.annotations.NotNull;
-import tools.redfox.bamboo.python.tools.builders.PyTestTask;
-import tools.redfox.bamboo.python.tools.model.PyTestTaskProperties;
+import tools.redfox.bamboo.python.tools.builders.SafetyTask;
+import tools.redfox.bamboo.python.tools.model.SafetyTaskProperties;
 
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
-public class SafetyExporter implements TaskDefinitionExporter {
-    @NotNull
-    @Override
-    public Map<String, String> toTaskConfiguration(@NotNull TaskContainer taskContainer, @NotNull TaskProperties taskProperties) {
-        PyTestTaskProperties typedTaskProperties = new PyTestTaskProperties();
-        Preconditions.checkState(typedTaskProperties != null, "Don't know how to import task properties of type: " + taskProperties.getClass().getName());
-        Map<String, String> config = new HashMap<>();
-        config.put("options", typedTaskProperties.getOptions());
-        return config;
+public class SafetyExporter extends BaseExporter<SafetyTaskProperties, SafetyTask> {
+    protected SafetyExporter(UIConfigSupport uiConfigSupport) {
+        super(SafetyTaskProperties.class, uiConfigSupport);
     }
 
     @NotNull
     @Override
-    public Task toSpecsEntity(@NotNull TaskDefinition taskDefinition) {
-        Map<String, String> config = taskDefinition.getConfiguration();
-        return new PyTestTask()
-                .options(config.get("options"));
+    protected ValidationContext getValidationContext() {
+        return SafetyTaskProperties.VALIDATION_CONTEXT;
     }
 
     @NotNull
     @Override
-    public List<ValidationProblem> validate(@NotNull TaskValidationContext taskValidationContext, @NotNull TaskProperties taskProperties) {
-        return Collections.emptyList();
+    protected SafetyTask toSpecsEntity(@NotNull Map<String, String> configuration) {
+        return new SafetyTask();
     }
 }

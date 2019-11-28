@@ -1,23 +1,45 @@
 package tools.redfox.bamboo.python.tools.type;
 
+import com.atlassian.bamboo.process.EnvironmentVariableAccessor;
 import com.atlassian.bamboo.process.ProcessService;
-import com.atlassian.bamboo.task.*;
+import com.atlassian.bamboo.task.TaskContext;
+import com.atlassian.bamboo.task.TaskException;
+import com.atlassian.bamboo.task.TaskResult;
+import com.atlassian.bamboo.task.TaskType;
 import com.atlassian.bamboo.v2.build.agent.capability.CapabilityContext;
+import com.atlassian.plugin.spring.scanner.annotation.imports.ComponentImport;
 import org.jetbrains.annotations.NotNull;
+import tools.redfox.bamboo.python.tools.junit.TestCase;
+
+import java.util.LinkedList;
+import java.util.List;
 
 public class BlackTaskType extends BaseTaskType implements TaskType {
-    protected BlackTaskType(ProcessService processService, CapabilityContext capabilityContext) {
-        super(processService, capabilityContext);
+    public static final String NAME = "black";
+    public static final String TASK_ID = "tools.redfox.bamboo.python-tools:tools.redfox.python.tools.black.task";
+
+    public BlackTaskType(
+            @ComponentImport ProcessService processService,
+            @ComponentImport EnvironmentVariableAccessor environmentVariableAccessor,
+            @ComponentImport CapabilityContext capabilityContext) {
+        super(processService, environmentVariableAccessor, capabilityContext);
     }
 
     @Override
     protected String getName() {
-        return "black";
+        return NAME;
+    }
+
+    @Override
+    protected List<TestCase> parseOutput(String output) {
+        List<TestCase> cases = new LinkedList<>();
+
+        return cases;
     }
 
     @NotNull
     @Override
     public TaskResult execute(@NotNull TaskContext taskContext) throws TaskException {
-        return super.execute(taskContext);
+        return super.execute(taskContext, "");
     }
 }

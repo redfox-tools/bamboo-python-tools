@@ -1,50 +1,22 @@
 package tools.redfox.bamboo.python.tools.configuration;
 
-import com.atlassian.bamboo.collections.ActionParametersMap;
-import com.atlassian.bamboo.task.AbstractTaskConfigurator;
-import com.atlassian.bamboo.task.TaskDefinition;
+import com.atlassian.bamboo.task.TaskConfiguratorHelper;
 import com.atlassian.bamboo.task.TaskRequirementSupport;
-import com.atlassian.bamboo.v2.build.agent.capability.Requirement;
-import com.atlassian.bamboo.v2.build.agent.capability.RequirementImpl;
+import com.atlassian.bamboo.ww2.actions.build.admin.create.UIConfigSupport;
+import com.atlassian.plugin.spring.scanner.annotation.imports.ComponentImport;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import tools.redfox.bamboo.python.tools.type.BlackTaskType;
 
-import java.util.LinkedHashSet;
-import java.util.Map;
 import java.util.Set;
 
-public class BlackTaskConfiguration extends AbstractTaskConfigurator implements TaskRequirementSupport {
-    @Override
+public class BlackTaskConfiguration extends BaseTaskConfiguration implements TaskRequirementSupport {
+    public BlackTaskConfiguration(@ComponentImport UIConfigSupport uiConfigSupport, @ComponentImport TaskConfiguratorHelper taskConfiguratorHelper) {
+        super(uiConfigSupport, taskConfiguratorHelper);
+    }
+
     @NotNull
-    public Set<Requirement> calculateRequirements(@NotNull TaskDefinition taskDefinition) {
-        return new LinkedHashSet<Requirement>() {{
-            add(new RequirementImpl("tools.redfox.python.tools.black.executable", true, ".*"));
-        }};
-    }
-
     @Override
-    @NotNull
-    public Map<String, String> generateTaskConfigMap(@NotNull final ActionParametersMap params, @Nullable final TaskDefinition previousTaskDefinition) {
-        final Map<String, String> config = super.generateTaskConfigMap(params, previousTaskDefinition);
-
-        config.put("tools.redfox.python.tools.black.options", params.getString("tools.redfox.python.tools.black.options"));
-
-        return config;
-    }
-
-    @Override
-    public void populateContextForCreate(@NotNull final Map<String, Object> context)
-    {
-        super.populateContextForCreate(context);
-
-        context.put("tools.redfox.python.tools.black.options", "--check");
-    }
-
-    @Override
-    public void populateContextForEdit(@NotNull final Map<String, Object> context, @NotNull final TaskDefinition taskDefinition)
-    {
-        super.populateContextForEdit(context, taskDefinition);
-
-        context.put("tools.redfox.python.tools.black.options", taskDefinition.getConfiguration().get("tools.redfox.python.tools.black.options"));
+    protected String getExecutableName() {
+        return BlackTaskType.NAME;
     }
 }

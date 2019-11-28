@@ -1,5 +1,8 @@
 package tools.redfox.bamboo.python.tools.type;
 
+import com.atlassian.bamboo.configuration.ConfigurationMap;
+import com.atlassian.bamboo.process.CommandlineStringUtils;
+import com.atlassian.bamboo.process.EnvironmentVariableAccessor;
 import com.atlassian.bamboo.process.ExternalProcessBuilder;
 import com.atlassian.bamboo.process.ProcessService;
 import com.atlassian.bamboo.task.TaskContext;
@@ -7,51 +10,126 @@ import com.atlassian.bamboo.task.TaskException;
 import com.atlassian.bamboo.task.TaskResult;
 import com.atlassian.bamboo.task.TaskResultBuilder;
 import com.atlassian.bamboo.v2.build.agent.capability.CapabilityContext;
-import com.atlassian.plugin.spring.scanner.annotation.imports.ComponentImport;
-import com.atlassian.utils.process.ExternalProcess;
+import com.google.common.base.Strings;
+import com.google.common.collect.ImmutableList;
+import org.apache.commons.io.FilenameUtils;
 import org.jetbrains.annotations.NotNull;
+import tools.redfox.bamboo.python.tools.junit.Success;
+import tools.redfox.bamboo.python.tools.junit.TestCase;
+import tools.redfox.bamboo.python.tools.junit.TestSuite;
+import tools.redfox.bamboo.python.tools.wrappers.WrappedBuildLogger;
+import tools.redfox.bamboo.python.tools.wrappers.WrappedTaskContext;
 
-import java.util.Arrays;
-import java.util.LinkedList;
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.JAXBException;
+import javax.xml.bind.Marshaller;
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.transform.TransformerException;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.nio.file.Paths;
 import java.util.List;
+import java.util.Map;
 
 abstract class BaseTaskType {
+    private final EnvironmentVariableAccessor environmentVariableAccessor;
     private ProcessService processService;
     private CapabilityContext capabilityContext;
 
     protected BaseTaskType(
-            @ComponentImport final ProcessService processService,
-            @ComponentImport CapabilityContext capabilityContext
-    ) {
+            ProcessService processService,
+            EnvironmentVariableAccessor environmentVariableAccessor,
+            CapabilityContext capabilityContext) {
         this.processService = processService;
+        this.environmentVariableAccessor = environmentVariableAccessor;
         this.capabilityContext = capabilityContext;
     }
 
-    public TaskResult execute(@NotNull TaskContext taskContext) throws TaskException {
-        final TaskResultBuilder builder = TaskResultBuilder.newBuilder(taskContext);
-        final String[] options = taskContext.getConfigurationMap().get("tools.redfox.python.tools." + this.getName() + ".options").split("\\s+");
-        List<String> optionsList = new LinkedList<>(Arrays.asList(options));
-        optionsList.removeIf(String::isEmpty);
+    public TaskResult execute(@NotNull TaskContext taskContext, String extraOptions) throws TaskException {
+        try {
+            WrappedTaskContext wrappedTaskContext = new WrappedTaskContext(taskContext);
+            ConfigurationMap configurationMap = taskContext.getConfigurationMap();
 
-        List<String> args = new LinkedList<>();
-        args.add(capabilityContext.getCapabilityValue("tools.redfox.python.tools." + this.getName() + ".executable")); // /Users/danielancuta/Library/Caches/pypoetry/virtualenvs/merlin-lCUD6KrQ-py3.6/bin/pytest
-        if (!optionsList.isEmpty()) {
-            args.addAll(optionsList);
+            String executablePath = this.capabilityContext.getCapabilityValue(String.format("system.builder.%s.%s", getName(), configurationMap.get("runtime")));
+            Map<String, String> extraEnvironmentVariables = this.environmentVariableAccessor.splitEnvironmentAssignments(configurationMap.get("environmentVariables"), false);
+
+            assert executablePath != null;
+
+            List<String> arguments = CommandlineStringUtils.tokeniseCommandline(extraOptions + " " + configurationMap.get("options"));
+
+            ImmutableList.Builder<String> commandListBuilder = ImmutableList.builder();
+            commandListBuilder
+                    .add(executablePath)
+                    .addAll(arguments);
+
+            if (taskContext.getConfigurationMap().getAsBoolean("fix")) {
+                taskContext.getBuildLogger().addBuildLogEntry("Fixing code with: " + String.join(" ", commandListBuilder.build()));
+
+                TaskResultBuilder taskResultBuilder = TaskResultBuilder.newBuilder(taskContext);
+                taskResultBuilder.checkReturnCode(
+                        this.processService.executeExternalProcess(
+                                taskContext,
+                                buildProcess(commandListBuilder, taskContext, extraEnvironmentVariables, executablePath)
+                        )
+                );
+            }
+
+            taskContext.getBuildLogger().addBuildLogEntry("Exec: " + String.join(" ", commandListBuilder.build()));
+
+            TaskResultBuilder taskResultBuilder = TaskResultBuilder.newBuilder(taskContext);
+            taskResultBuilder.checkReturnCode(
+                    this.processService.executeExternalProcess(
+                            wrappedTaskContext,
+                            buildProcess(commandListBuilder, taskContext, extraEnvironmentVariables, executablePath)
+                    )
+            );
+
+            String output = configurationMap.get("output");
+
+            if (!Strings.isNullOrEmpty(output)) {
+                generateJUnit(taskContext, (WrappedBuildLogger) wrappedTaskContext.getBuildLogger(), output);
+                return taskResultBuilder.success().build();
+            }
+
+            return taskResultBuilder.build();
+        } catch (Exception e) {
+            taskContext.getBuildLogger().addErrorLogEntry("Failed to execute task: " + e.getMessage());
+            throw new TaskException("Failed to execute task", e);
         }
-        args.add(".");
+    }
 
-        ExternalProcess process = processService.createExternalProcess(taskContext,
-                new ExternalProcessBuilder()
-                        .command(args)
-                        .workingDirectory(taskContext.getWorkingDirectory()));
+    protected void generateJUnit(TaskContext taskContext, WrappedBuildLogger buildLogger, String output) throws TransformerException, ParserConfigurationException, JAXBException, FileNotFoundException {
+        output = Paths.get(taskContext.getRootDirectory().getAbsolutePath(), output).toString();
+        buildLogger.getRawBuildLogger().addBuildLogEntry("Writing check output: " + output);
 
-        taskContext.getBuildLogger().addBuildLogEntry("Executing " + this.getName() + " with: " + process.getCommandLine());
-        process.execute();
+        JAXBContext contextObj = JAXBContext.newInstance(TestSuite.class);
+        Marshaller marshallerObj = contextObj.createMarshaller();
+        marshallerObj.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
 
-        builder.checkReturnCode(process, 0);
+        TestSuite testSuite = new TestSuite("Dependency check: " + getName());
+        testSuite.addTestCases(parseOutput(buildLogger.getTaskLog()));
 
-        return builder.build();
+        if (testSuite.getTestCase().size() == 0) {
+            testSuite.addTestCase(
+                    new TestCase(
+                            String.format("All %s checks passed.", getName()),
+                            new Success("All checks passed.", "success")
+                    )
+            );
+        }
+
+        marshallerObj.marshal(testSuite, new FileOutputStream(output));
+    }
+
+    public ExternalProcessBuilder buildProcess(ImmutableList.Builder commandListBuilder, TaskContext taskContext, Map<String, String> extraEnvironmentVariables, String executablePath) {
+        return new ExternalProcessBuilder()
+                .command(commandListBuilder.build())
+                .env(extraEnvironmentVariables)
+                .path(FilenameUtils.getFullPath(executablePath))
+                .workingDirectory(taskContext.getWorkingDirectory());
     }
 
     abstract protected String getName();
+
+    abstract protected List<TestCase> parseOutput(String output);
 }
