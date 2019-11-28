@@ -21,7 +21,7 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 
-public class PylintTaskType extends BaseTaskType implements TaskType {
+public class PylintTaskType extends BaseTaskType implements TaskType, JUnitGenratorInterface {
     public static final String NAME = "pylint";
     public static final String TASK_ID = "tools.redfox.bamboo.python-tools:tools.redfox.python.tools.pylint.task";
 

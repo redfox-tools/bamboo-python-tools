@@ -27,7 +27,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
-public class SafetyTaskType extends BaseTaskType implements TaskType {
+public class SafetyTaskType extends BaseTaskType implements TaskType, JUnitGenratorInterface {
     public static final String NAME = "safety";
     public static final String TASK_ID = "tools.redfox.bamboo.python-tools:tools.redfox.python.tools.safety.task";
     private List<Requirement> requirements = new LinkedList<>();

@@ -69,21 +69,30 @@ abstract class BaseTaskType {
                     this.processService.executeExternalProcess(
                             wrappedTaskContext,
                             buildProcess(commandListBuilder, taskContext, extraEnvironmentVariables, executablePath)
-                    )
+                    ),
+                    getExpectedExitCode()
             );
 
             String output = configurationMap.getOrDefault("output", null);
 
-            if (!Strings.isNullOrEmpty(output)) {
+            if (!Strings.isNullOrEmpty(output) && this instanceof JUnitGenratorInterface) {
                 generateJUnit(taskContext, (WrappedBuildLogger) wrappedTaskContext.getBuildLogger(), output);
                 return taskResultBuilder.success().build();
             }
 
-            return taskResultBuilder.build();
+            return buildResult(taskResultBuilder);
         } catch (Exception e) {
             taskContext.getBuildLogger().addErrorLogEntry("Failed to execute task: " + e.getMessage());
             throw new TaskException("Failed to execute task", e);
         }
+    }
+
+    protected TaskResult buildResult(TaskResultBuilder taskResultBuilder) {
+        return taskResultBuilder.build();
+    }
+
+    protected int getExpectedExitCode() {
+        return 1;
     }
 
     protected void generateJUnit(TaskContext taskContext, WrappedBuildLogger buildLogger, String output) throws TransformerException, ParserConfigurationException, JAXBException, FileNotFoundException {
