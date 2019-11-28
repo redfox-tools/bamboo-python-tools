@@ -16,6 +16,14 @@ public class BlackTaskConfiguration extends BaseTaskConfiguration implements Tas
 
     @NotNull
     @Override
+    protected Set<String> getFieldsToCopy() {
+        Set<String> fields = super.getFieldsToCopy();
+        fields.remove("output");
+        return fields;
+    }
+
+    @NotNull
+    @Override
     protected String getExecutableName() {
         return BlackTaskType.NAME;
     }

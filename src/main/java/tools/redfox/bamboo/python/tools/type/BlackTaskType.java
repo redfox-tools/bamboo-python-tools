@@ -32,9 +32,7 @@ public class BlackTaskType extends BaseTaskType implements TaskType {
 
     @Override
     protected List<TestCase> parseOutput(String output) {
-        List<TestCase> cases = new LinkedList<>();
-
-        return cases;
+        return new LinkedList<TestCase>();
     }
 
     @NotNull

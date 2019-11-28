@@ -62,18 +62,6 @@ abstract class BaseTaskType {
                     .add(executablePath)
                     .addAll(arguments);
 
-            if (taskContext.getConfigurationMap().getAsBoolean("fix")) {
-                taskContext.getBuildLogger().addBuildLogEntry("Fixing code with: " + String.join(" ", commandListBuilder.build()));
-
-                TaskResultBuilder taskResultBuilder = TaskResultBuilder.newBuilder(taskContext);
-                taskResultBuilder.checkReturnCode(
-                        this.processService.executeExternalProcess(
-                                taskContext,
-                                buildProcess(commandListBuilder, taskContext, extraEnvironmentVariables, executablePath)
-                        )
-                );
-            }
-
             taskContext.getBuildLogger().addBuildLogEntry("Exec: " + String.join(" ", commandListBuilder.build()));
 
             TaskResultBuilder taskResultBuilder = TaskResultBuilder.newBuilder(taskContext);
@@ -84,7 +72,7 @@ abstract class BaseTaskType {
                     )
             );
 
-            String output = configurationMap.get("output");
+            String output = configurationMap.getOrDefault("output", null);
 
             if (!Strings.isNullOrEmpty(output)) {
                 generateJUnit(taskContext, (WrappedBuildLogger) wrappedTaskContext.getBuildLogger(), output);

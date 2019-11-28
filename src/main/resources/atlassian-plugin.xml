@@ -44,5 +44,16 @@
         <configuration class="tools.redfox.bamboo.python.tools.configuration.SafetyTaskConfiguration" />
         <exporter class="tools.redfox.bamboo.python.tools.exporter.SafetyExporter" />
     </taskType>
+
+    <taskType key="tools.redfox.python.tools.pylint.task" name="pylint" class="tools.redfox.bamboo.python.tools.type.PylintTaskType">
+        <description>Run pylint against your code.</description>
+        <executable key="pylint" nameKey="agent.capability.type.tools.redfox.python.tools.pylint.executableName" pathHelpKey="agent.capability.type.tools.redfox.python.tools.pylint.executable.value.description" />
+        <category name="builder" />
+        <resource type="freemarker" name="edit" location="templates/tools/redfox/pylint/edit.ftl"/>
+        <resource type="freemarker" name="view" location="templates/tools/redfox/pylint/edit.ftl"/>
+        <resource type="download" name="icon" location="images/pytest/logo.png"/>
+        <configuration class="tools.redfox.bamboo.python.tools.configuration.PylintTaskConfiguration" />
+        <exporter class="tools.redfox.bamboo.python.tools.exporter.PylintExporter" />
+    </taskType>
 </atlassian-plugin>
 

@@ -14,6 +14,12 @@
     name="options"
     cssClass="long-field" /]
 
+[@s.textfield
+    labelKey="tools.redfox.bamboo.${executable}.output.label"
+    descriptionKey="tools.redfox.bamboo.${executable}.output.description"
+    name="output"
+    cssClass="long-field" /]
+
 [@ui.bambooSection titleKey='repository.advanced.option' collapsible=true isCollapsed=!(environmentVariables?has_content || workingSubDirectory?has_content)]
     [@s.textfield labelKey='builder.common.env' name='environmentVariables' cssClass="long-field" /]
     [@s.textfield labelKey='builder.common.sub' name='workingSubDirectory' cssClass="long-field" /]
