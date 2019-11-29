@@ -8,12 +8,13 @@ import com.atlassian.bamboo.specs.api.model.plan.requirement.RequirementProperti
 import com.atlassian.bamboo.specs.api.validators.common.ValidationContext;
 import org.jetbrains.annotations.NotNull;
 import tools.redfox.bamboo.python.tools.builders.PyTestTask;
+import tools.redfox.bamboo.python.tools.builders.SafetyTask;
 import tools.redfox.bamboo.python.tools.type.PyTestTaskType;
 import tools.redfox.bamboo.python.tools.type.SafetyTaskType;
 
 import java.util.List;
 
-@Builder(PyTestTask.class)
+@Builder(SafetyTask.class)
 public class SafetyTaskProperties extends BaseTaskProperties {
     public static final ValidationContext VALIDATION_CONTEXT = ValidationContext.of(SafetyTaskType.NAME);
     private static final AtlassianModuleProperties ATLASSIAN_PLUGIN =

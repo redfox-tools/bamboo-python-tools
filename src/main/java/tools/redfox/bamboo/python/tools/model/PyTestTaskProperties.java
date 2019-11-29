@@ -7,9 +7,7 @@ import com.atlassian.bamboo.specs.api.model.plan.condition.ConditionProperties;
 import com.atlassian.bamboo.specs.api.model.plan.requirement.RequirementProperties;
 import com.atlassian.bamboo.specs.api.validators.common.ValidationContext;
 import org.jetbrains.annotations.NotNull;
-import tools.redfox.bamboo.docker.tools.type.DockerfileLintTaskType;
 import tools.redfox.bamboo.python.tools.builders.PyTestTask;
-import tools.redfox.bamboo.python.tools.type.BlackTaskType;
 import tools.redfox.bamboo.python.tools.type.PyTestTaskType;
 
 import java.util.List;

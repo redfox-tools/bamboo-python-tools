@@ -8,11 +8,12 @@ import com.atlassian.bamboo.specs.api.model.plan.requirement.RequirementProperti
 import com.atlassian.bamboo.specs.api.validators.common.ValidationContext;
 import org.jetbrains.annotations.NotNull;
 import tools.redfox.bamboo.python.tools.builders.BlackTask;
+import tools.redfox.bamboo.python.tools.builders.PylintTask;
 import tools.redfox.bamboo.python.tools.type.PylintTaskType;
 
 import java.util.List;
 
-@Builder(BlackTask.class)
+@Builder(PylintTask.class)
 public class PylintTaskProperties extends BaseTaskProperties {
     public static final ValidationContext VALIDATION_CONTEXT = ValidationContext.of(PylintTaskType.NAME);
     private static final AtlassianModuleProperties ATLASSIAN_PLUGIN =
