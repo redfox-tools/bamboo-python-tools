@@ -2,8 +2,8 @@ package tools.redfox.bamboo.python.tools.builders;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import tools.redfox.bamboo.python.tools.model.PylintTaskProperties;
-import tools.redfox.bamboo.python.tools.model.SafetyTaskProperties;
+import com.atlassian.bamboo.specs.model.tools.python.PylintTaskProperties;
+import tools.redfox.bamboo.base.builder.BaseTask;
 
 public class PylintTask extends BaseTask<PylintTask, PylintTaskProperties> {
     @Nullable

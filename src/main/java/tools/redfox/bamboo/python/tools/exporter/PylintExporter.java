@@ -3,14 +3,15 @@ package tools.redfox.bamboo.python.tools.exporter;
 import com.atlassian.bamboo.specs.api.validators.common.ValidationContext;
 import com.atlassian.bamboo.ww2.actions.build.admin.create.UIConfigSupport;
 import org.jetbrains.annotations.NotNull;
+import tools.redfox.bamboo.base.exporter.BaseExporter;
 import tools.redfox.bamboo.python.tools.builders.PylintTask;
-import tools.redfox.bamboo.python.tools.model.PylintTaskProperties;
+import com.atlassian.bamboo.specs.model.tools.python.PylintTaskProperties;
 
 import java.util.Map;
 
 public class PylintExporter extends BaseExporter<PylintTaskProperties, PylintTask> {
-    protected PylintExporter(UIConfigSupport uiConfigSupport) {
-        super(PylintTaskProperties.class, uiConfigSupport);
+    protected PylintExporter() {
+        super(PylintTaskProperties.class);
     }
 
     @NotNull

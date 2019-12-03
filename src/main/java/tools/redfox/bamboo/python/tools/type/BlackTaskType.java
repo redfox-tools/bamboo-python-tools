@@ -9,8 +9,10 @@ import com.atlassian.bamboo.task.TaskType;
 import com.atlassian.bamboo.v2.build.agent.capability.CapabilityContext;
 import com.atlassian.plugin.spring.scanner.annotation.imports.ComponentImport;
 import org.jetbrains.annotations.NotNull;
-import tools.redfox.bamboo.python.tools.junit.TestCase;
+import tools.redfox.bamboo.base.tools.junit.TestCase;
+import tools.redfox.bamboo.base.type.BaseTaskType;
 
+import java.io.IOException;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -28,16 +30,5 @@ public class BlackTaskType extends BaseTaskType implements TaskType {
     @Override
     protected String getName() {
         return NAME;
-    }
-
-    @Override
-    protected List<TestCase> parseOutput(String output) {
-        return new LinkedList<TestCase>();
-    }
-
-    @NotNull
-    @Override
-    public TaskResult execute(@NotNull TaskContext taskContext) throws TaskException {
-        return super.execute(taskContext, "");
     }
 }

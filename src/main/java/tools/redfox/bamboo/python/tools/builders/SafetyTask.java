@@ -2,7 +2,8 @@ package tools.redfox.bamboo.python.tools.builders;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import tools.redfox.bamboo.python.tools.model.SafetyTaskProperties;
+import com.atlassian.bamboo.specs.model.tools.python.SafetyTaskProperties;
+import tools.redfox.bamboo.base.builder.BaseTask;
 
 public class SafetyTask extends BaseTask<SafetyTask, SafetyTaskProperties> {
     @Nullable

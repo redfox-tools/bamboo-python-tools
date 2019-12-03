@@ -3,14 +3,15 @@ package tools.redfox.bamboo.python.tools.exporter;
 import com.atlassian.bamboo.specs.api.validators.common.ValidationContext;
 import com.atlassian.bamboo.ww2.actions.build.admin.create.UIConfigSupport;
 import org.jetbrains.annotations.NotNull;
+import tools.redfox.bamboo.base.exporter.BaseExporter;
 import tools.redfox.bamboo.python.tools.builders.SafetyTask;
-import tools.redfox.bamboo.python.tools.model.SafetyTaskProperties;
+import com.atlassian.bamboo.specs.model.tools.python.SafetyTaskProperties;
 
 import java.util.Map;
 
 public class SafetyExporter extends BaseExporter<SafetyTaskProperties, SafetyTask> {
-    protected SafetyExporter(UIConfigSupport uiConfigSupport) {
-        super(SafetyTaskProperties.class, uiConfigSupport);
+    protected SafetyExporter() {
+        super(SafetyTaskProperties.class);
     }
 
     @NotNull

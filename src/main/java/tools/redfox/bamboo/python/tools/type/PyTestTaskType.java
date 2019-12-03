@@ -1,17 +1,13 @@
 package tools.redfox.bamboo.python.tools.type;
 
-import com.atlassian.bamboo.configuration.ConfigurationMap;
+import com.atlassian.bamboo.process.CommandlineStringUtils;
 import com.atlassian.bamboo.process.EnvironmentVariableAccessor;
 import com.atlassian.bamboo.process.ProcessService;
-import com.atlassian.bamboo.task.*;
+import com.atlassian.bamboo.task.TaskType;
 import com.atlassian.bamboo.v2.build.agent.capability.CapabilityContext;
 import com.atlassian.plugin.spring.scanner.annotation.imports.ComponentImport;
-import com.google.common.base.Strings;
-import org.jetbrains.annotations.NotNull;
-import tools.redfox.bamboo.python.tools.junit.TestCase;
-
-import java.util.LinkedList;
-import java.util.List;
+import tools.redfox.bamboo.base.tools.Command;
+import tools.redfox.bamboo.base.type.BaseTaskType;
 
 public class PyTestTaskType extends BaseTaskType implements TaskType {
     public static final String NAME = "pytest";
@@ -30,19 +26,12 @@ public class PyTestTaskType extends BaseTaskType implements TaskType {
     }
 
     @Override
-    protected List<TestCase> parseOutput(String output) {
-        return new LinkedList<TestCase>();
-    }
-
-    @NotNull
-    @Override
-    public TaskResult execute(@NotNull TaskContext taskContext) throws TaskException {
-        ConfigurationMap config = taskContext.getConfigurationMap();
-        String options = "";
-        if (!Strings.isNullOrEmpty(config.get("output"))) {
-            options += "--junit-xml=" + config.get("output");
+    protected Command getCommand() {
+        Command command = super.getCommand();
+        if (hasOption("output")) {
+            command.addAll(0, CommandlineStringUtils.tokeniseCommandline("--junit-xml=" + configurationMap.get("output")));
         }
-        return super.execute(taskContext, options);
+        return command;
     }
 
     @Override

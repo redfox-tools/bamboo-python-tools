@@ -1,7 +1,8 @@
 package tools.redfox.bamboo.python.tools.builders;
 
 import org.jetbrains.annotations.NotNull;
-import tools.redfox.bamboo.python.tools.model.BlackTaskProperties;
+import com.atlassian.bamboo.specs.model.tools.python.BlackTaskProperties;
+import tools.redfox.bamboo.base.builder.BaseTask;
 
 public class BlackTask extends BaseTask<BlackTask, BlackTaskProperties> {
     @NotNull

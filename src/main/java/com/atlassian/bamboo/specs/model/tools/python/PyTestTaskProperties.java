@@ -1,4 +1,4 @@
-package tools.redfox.bamboo.python.tools.model;
+package com.atlassian.bamboo.specs.model.tools.python;
 
 import com.atlassian.bamboo.specs.api.codegen.annotations.Builder;
 import com.atlassian.bamboo.specs.api.exceptions.PropertiesValidationException;
@@ -7,22 +7,23 @@ import com.atlassian.bamboo.specs.api.model.plan.condition.ConditionProperties;
 import com.atlassian.bamboo.specs.api.model.plan.requirement.RequirementProperties;
 import com.atlassian.bamboo.specs.api.validators.common.ValidationContext;
 import org.jetbrains.annotations.NotNull;
-import tools.redfox.bamboo.python.tools.builders.BlackTask;
-import tools.redfox.bamboo.python.tools.type.BlackTaskType;
+import tools.redfox.bamboo.base.model.BaseTaskProperties;
+import tools.redfox.bamboo.python.tools.builders.PyTestTask;
+import tools.redfox.bamboo.python.tools.type.PyTestTaskType;
 
 import java.util.List;
 
-@Builder(BlackTask.class)
-public class BlackTaskProperties extends BaseTaskProperties {
-    public static final ValidationContext VALIDATION_CONTEXT = ValidationContext.of(BlackTaskType.NAME);
+@Builder(PyTestTask.class)
+public class PyTestTaskProperties extends BaseTaskProperties {
+    public static final ValidationContext VALIDATION_CONTEXT = ValidationContext.of(PyTestTaskType.NAME);
     private static final AtlassianModuleProperties ATLASSIAN_PLUGIN =
-            new AtlassianModuleProperties(BlackTaskType.TASK_ID);
+            new AtlassianModuleProperties(PyTestTaskType.TASK_ID);
 
-    public BlackTaskProperties() {
+    public PyTestTaskProperties() {
         super();
     }
 
-    public BlackTaskProperties(
+    public PyTestTaskProperties(
             String description,
             boolean enabled,
             String runtime,
@@ -37,6 +38,6 @@ public class BlackTaskProperties extends BaseTaskProperties {
 
     @Override
     protected String getModulePropertiesName() {
-        return BlackTaskType.TASK_ID;
+        return PyTestTaskType.TASK_ID;
     }
 }

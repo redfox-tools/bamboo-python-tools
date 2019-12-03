@@ -3,14 +3,15 @@ package tools.redfox.bamboo.python.tools.exporter;
 import com.atlassian.bamboo.specs.api.validators.common.ValidationContext;
 import com.atlassian.bamboo.ww2.actions.build.admin.create.UIConfigSupport;
 import org.jetbrains.annotations.NotNull;
+import tools.redfox.bamboo.base.exporter.BaseExporter;
 import tools.redfox.bamboo.python.tools.builders.PyTestTask;
-import tools.redfox.bamboo.python.tools.model.PyTestTaskProperties;
+import com.atlassian.bamboo.specs.model.tools.python.PyTestTaskProperties;
 
 import java.util.Map;
 
 public class PyTestExporter extends BaseExporter<PyTestTaskProperties, PyTestTask> {
-    protected PyTestExporter(UIConfigSupport uiConfigSupport) {
-        super(PyTestTaskProperties.class, uiConfigSupport);
+    protected PyTestExporter() {
+        super(PyTestTaskProperties.class);
     }
 
     @NotNull
